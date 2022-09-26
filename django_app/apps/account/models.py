@@ -11,13 +11,6 @@ class Departament(models.Model):
         return self.name
 
 
-class Address(models.Model):
-    city = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.city
-
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to="profile/avatar/", blank=True, null=True)
@@ -31,8 +24,15 @@ class Profile(models.Model):
         blank=True,
         null=True
     )
-    address = models.ForeignKey(
-        Address,
+
+    def __str__(self):
+        return self.user.username
+
+
+class Location(models.Model):
+    city = models.CharField(max_length=20)
+    profile = models.OneToOneField(
+        Profile,
         on_delete=models.CASCADE,
         related_name='+',
         blank=True,
@@ -40,7 +40,7 @@ class Profile(models.Model):
     )
 
     def __str__(self):
-        return 'Profile for user {}'.format(self.user.username)
+        return self.city
 
 
 class Wallet(models.Model):
@@ -48,4 +48,4 @@ class Wallet(models.Model):
     balance = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
     def __str__(self):
-        return 'Wallet for user {}'.format(self.user.username)
+        return self.user.username
