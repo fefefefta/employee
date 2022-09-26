@@ -1,0 +1,31 @@
+version: "3"
+
+volumes:
+  xaxaton_postgres:
+
+services:
+  xaxaton_postgres:
+    image: postgres
+    restart: always
+    container_name: ${POSTGRES_HOST}
+    env_file:
+      - .env
+    volumes:
+      - xaxaton_postgres:/var/lib/postgresql/data
+
+  django_app:
+    build:
+      context: .
+      dockerfile: django_app/Dockerfile
+    command: python manage.py runserver
+    image: django_app
+    container_name: django_app
+    env_file:
+      - .env
+    ports:
+      - "0.0.0.0:5001:5001"
+    restart: unless-stopped
+    tty: True
+    working_dir: /django_app
+
+
