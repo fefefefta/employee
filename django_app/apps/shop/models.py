@@ -6,19 +6,28 @@ from django.db import models
 class Tag(models.Model):
     name = models.CharField(max_length=15)
 
+    def __str__(self):
+        return self.name
+
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
 
 
 class Product(models.Model):
     name = models.CharField(max_length=50)
     tags = models.ManyToManyField(Tag)
-    categories = models.ManyToManyField(Category)
+    categories = models.ForeignKey(Category, on_delete=models.CASCADE)
     description = models.TextField()
     price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     status = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.name
+    
 
 class Image(models.Model):
     image = models.ImageField(upload_to="product/image/")
@@ -40,3 +49,5 @@ class Comment(models.Model):
     )
     text = models.TextField()
     status = models.BooleanField(default=True)
+    
+    
