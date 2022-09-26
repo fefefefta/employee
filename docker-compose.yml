@@ -17,13 +17,13 @@ services:
     build:
       context: .
       dockerfile: django_app/Dockerfile
-    command: python manage.py runserver
+    command: python manage.py runserver 0.0.0.0:8000
     image: django_app
     container_name: django_app
     env_file:
       - .env
     ports:
-      - "0.0.0.0:5001:5001"
+      - "127.0.0.1:8000:8000"
     restart: unless-stopped
     tty: True
     working_dir: /django_app
