@@ -17,7 +17,9 @@ services:
     build:
       context: .
       dockerfile: django_app/Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - xaxaton_postgres
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     image: django_app
     container_name: django_app
     env_file:
@@ -27,5 +29,4 @@ services:
     restart: unless-stopped
     tty: True
     working_dir: /django_app
-
 

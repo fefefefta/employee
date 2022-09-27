@@ -3,11 +3,6 @@ from django.contrib import admin
 from .models import Tag, Category, Product, Image, Comment
 
 
-class ImageTabInlines(admin.TabularInline):
-    model = Image
-    extra = 1
-
-
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     pass
@@ -20,7 +15,12 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ImageTabInlines, ]
+    pass
+
+
+@admin.register(Image)
+class ImageAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(Comment)
