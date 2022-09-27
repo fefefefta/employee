@@ -15,3 +15,6 @@ ENV LC_ALL ru_RU.UTF-8
 
 RUN pip install --no-cache-dir -r requirements.txt
 COPY ./django_app /django_app
+
+RUN python manage.py makemigrations
+# RUN python manage.py migrate --database xaxaton_postgres:5432
