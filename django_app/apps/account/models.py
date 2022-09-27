@@ -5,6 +5,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Departament(models.Model):
+    """Отдел банка"""
     name = models.CharField(max_length=50)
 
     def __str__(self):
@@ -12,7 +13,11 @@ class Departament(models.Model):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    """Профиль пользователя"""
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE
+    )
     avatar = models.ImageField(upload_to="profile/avatar/", blank=True, null=True)
     birthday = models.DateField(blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
@@ -30,6 +35,7 @@ class Profile(models.Model):
 
 
 class Location(models.Model):
+    """Адрес"""
     city = models.CharField(max_length=20)
     profile = models.OneToOneField(
         Profile,
@@ -44,7 +50,11 @@ class Location(models.Model):
 
 
 class Wallet(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    """Кошелек"""
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE
+    )
     balance = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
     def __str__(self):
