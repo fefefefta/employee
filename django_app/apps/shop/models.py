@@ -4,7 +4,7 @@ from django.db import models
 
 class Tag(models.Model):
     """Тэг"""
-    name = models.CharField("тэг", max_length=15)
+    name = models.CharField("тэг", max_length=15, unique=True)
 
     class Meta:
         verbose_name = "тэг"
@@ -16,7 +16,7 @@ class Tag(models.Model):
 
 class Category(models.Model):
     """Категория"""
-    name = models.CharField("название", max_length=50)
+    name = models.CharField("название", max_length=50, unique=True)
 
     class Meta:
         verbose_name = "категорию"
