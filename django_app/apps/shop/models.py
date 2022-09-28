@@ -31,6 +31,12 @@ class Product(models.Model):
     name = models.CharField("название", max_length=50)
     description = models.TextField("описание")
     price = models.DecimalField("цена", max_digits=8, decimal_places=2, default=0)
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name='+',
+        verbose_name='категория'
+    )
     tags = models.ManyToManyField(
         Tag,
         blank=True,
@@ -52,7 +58,7 @@ class Image(models.Model):
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
-        related_name='+',
+        related_name='product_images',
         verbose_name="товар",
     )
 
@@ -87,4 +93,4 @@ class Comment(models.Model):
         verbose_name_plural = "комментарии"
 
     def __str__(self):
-        return self.product.name, self.user.username
+        return f'{self.product.name}, {self.user.username}'

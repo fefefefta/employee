@@ -26,3 +26,5 @@ class IdeaAdmin(admin.ModelAdmin):
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     inlines = [LocationTabInlines, ImageTabInlines]
+
+
