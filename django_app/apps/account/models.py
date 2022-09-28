@@ -3,13 +3,7 @@ from django.db import models
 
 from phonenumber_field.modelfields import PhoneNumberField
 
-
-class Departament(models.Model):
-    """Отдел банка"""
-    name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name
+from apps.board.models import Departament
 
 
 class Profile(models.Model):

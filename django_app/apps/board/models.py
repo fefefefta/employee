@@ -2,6 +2,14 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
+class Departament(models.Model):
+    """Отдел банка"""
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
 class Event(models.Model):
     """Мероприятие"""
     name = models.CharField(max_length=50)
@@ -16,6 +24,12 @@ class Event(models.Model):
 
 class Idea(models.Model):
     """Идея от пользователя"""
+    STATUS_CHOICE = (
+        ("новая", "Новая"),
+        ("обсуждение", "Обсуждение"),
+        ("исполнена", "Исполнена"),
+        ("отменена", "Отменена")
+    )
     name = models.CharField(max_length=100)
     user = models.OneToOneField(
         User,
@@ -29,6 +43,7 @@ class Idea(models.Model):
         related_name='likes_user_ideas',
         blank=True,
     )
+    status = models.CharField(choices=STATUS_CHOICE, default="новая", max_length=15)
 
     def __str__(self):
         return self.name
