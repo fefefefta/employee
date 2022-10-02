@@ -4,24 +4,46 @@ from django.db import models
 
 class Departament(models.Model):
     """Отдел банка"""
-    name = models.CharField(max_length=50)
+    name = models.CharField('название', max_length=50)
+
+    class Meta:
+        verbose_name = "отдел"
+        verbose_name_plural = "отделы"
 
     def __str__(self):
         return self.name
 
 
+# Добавить планирую пойти
+# Понять передачу NFT
 class Event(models.Model):
     """Мероприятие"""
-    name = models.CharField(max_length=50)
-    start = models.DateTimeField()
-    end = models.DateTimeField()
-    description = models.TextField()
-    payment = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    name = models.CharField('название', max_length=50)
+    start = models.DateTimeField('начало')
+    end = models.DateTimeField('конец', blank=True, null=True)
+    description = models.TextField('описание')
+    payment = models.DecimalField('оплата', max_digits=8, decimal_places=2, default=0)
+
+    class Meta:
+        verbose_name = "событие"
+        verbose_name_plural = "события"
 
     def __str__(self):
         return self.name
 
 
+class Category(models.Model):
+    name = models.CharField('название', max_length=50, unique=True)
+
+    class Meta:
+        verbose_name = "категорию"
+        verbose_name_plural = "категории"
+
+    def __str__(self):
+        return self.name
+
+
+# Понять передачу NFT
 class Idea(models.Model):
     """Идея от пользователя"""
     STATUS_CHOICE = (
@@ -30,40 +52,55 @@ class Idea(models.Model):
         ("исполнена", "Исполнена"),
         ("отменена", "Отменена")
     )
-    name = models.CharField(max_length=100)
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         User,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name='пользователь',
     )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        verbose_name='категория',
+    )
+    name = models.CharField('название', max_length=100)
     created = models.DateTimeField(auto_now_add=True)
-    description = models.TextField()
-    likes = models.PositiveIntegerField(default=0)
+    description = models.TextField('описание')
+    likes = models.PositiveIntegerField('кол-во лайков', default=0)
     user_likes = models.ManyToManyField(
         User,
         related_name='likes_user_ideas',
         blank=True,
+        verbose_name='понравилось'
     )
-    status = models.CharField(choices=STATUS_CHOICE, default="новая", max_length=15)
+    status = models.CharField('статус', choices=STATUS_CHOICE, default="новая", max_length=15)
+
+    class Meta:
+        verbose_name = "идею"
+        verbose_name_plural = "идеи"
+        ordering = ['created']
 
     def __str__(self):
         return self.name
 
-    class Meta:
-        ordering = ['created']
 
-
+# Понять передачу NFT
 class Payment(models.Model):
     """Оплата за идею"""
     user = models.OneToOneField(
         User,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name='пользователь',
     )
-    payment = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    payment = models.DecimalField('размер бонуса', max_digits=8, decimal_places=2, default=0)
     idea = models.ForeignKey(
         Idea,
         on_delete=models.CASCADE,
-        related_name='+'
+        verbose_name='идея'
     )
+
+    class Meta:
+        verbose_name = "платеж"
+        verbose_name_plural = "платежи"
 
     def __str__(self):
         return self.idea.name
@@ -71,14 +108,20 @@ class Payment(models.Model):
 
 class Location(models.Model):
     """Адрес мероприятия"""
-    city = models.CharField(max_length=20)
+    city = models.CharField('город', max_length=20)
+    street = models.CharField('улица', max_length=50)
+    house = models.IntegerField('дом')
     event = models.ForeignKey(
         Event,
         on_delete=models.CASCADE,
-        related_name='+',
         blank=True,
-        null=True
+        null=True,
+        verbose_name='мероприятие'
     )
+
+    class Meta:
+        verbose_name = "адрес"
+        verbose_name_plural = "адреса"
 
     def __str__(self):
         return self.city
@@ -86,12 +129,33 @@ class Location(models.Model):
 
 class Image(models.Model):
     """Изображения для мероприятия"""
-    image = models.ImageField(upload_to="event/image/")
+    image = models.ImageField('изображение', upload_to="event/image/")
     event = models.ForeignKey(
         Event,
         on_delete=models.CASCADE,
-        related_name='+'
+        verbose_name='мероприятие'
     )
+
+    class Meta:
+        verbose_name = "изображение"
+        verbose_name_plural = "изображения"
 
     def __str__(self):
         return self.event.name
+
+
+class File(models.Model):
+    """Файл для идеи"""
+    file = models.FileField('файл', upload_to='user-idea-file/')
+    idea = models.ForeignKey(
+        Idea,
+        on_delete=models.CASCADE,
+        verbose_name='идея'
+    )
+
+    class Meta:
+        verbose_name = "файл"
+        verbose_name_plural = "файлы"
+
+    def __str__(self):
+        return self.idea.name

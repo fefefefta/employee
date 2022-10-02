@@ -1,17 +1,5 @@
-from django.contrib.auth.models import User
 from django.db import models
-
-
-class Tag(models.Model):
-    """Тэг"""
-    name = models.CharField("тэг", max_length=15, unique=True)
-
-    class Meta:
-        verbose_name = "тэг"
-        verbose_name_plural = "тэги"
-
-    def __str__(self):
-        return self.name
+from django.contrib.auth.models import User
 
 
 class Category(models.Model):
@@ -28,20 +16,15 @@ class Category(models.Model):
 
 class Product(models.Model):
     """Товар"""
-    name = models.CharField("название", max_length=50)
-    description = models.TextField("описание")
-    price = models.DecimalField("цена", max_digits=8, decimal_places=2, default=0)
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
-        related_name='+',
         verbose_name='категория'
     )
-    tags = models.ManyToManyField(
-        Tag,
-        blank=True,
-        verbose_name="тэги"
-    )
+    name = models.CharField("название", max_length=50)
+    image = models.ImageField("изображение", upload_to="product/image/", blank=True, null=True)
+    description = models.TextField("описание", blank=True, null=True)
+    price = models.DecimalField("цена", max_digits=8, decimal_places=2, default=0)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -52,45 +35,22 @@ class Product(models.Model):
         return self.name
 
 
-class Image(models.Model):
-    """Изображение для товара"""
-    image = models.ImageField("изображение", upload_to="product/image/")
-    product = models.ForeignKey(
-        Product,
-        on_delete=models.CASCADE,
-        related_name='product_images',
-        verbose_name="товар",
-    )
-
-    class Meta:
-        verbose_name = "изображение"
-        verbose_name_plural = "изображения"
-
-    def __str__(self):
-        return self.product.name
-
-
-class Comment(models.Model):
-    """Комментарий товара"""
-    product = models.ForeignKey(
-        Product,
-        on_delete=models.CASCADE,
-        related_name='+',
-        verbose_name="товар",
-    )
+class Cart(models.Model):
+    """Корзина пользователя"""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='+',
-        verbose_name="пользователь"
+        verbose_name='пользователь',
     )
-    text = models.TextField("текст")
-    created = models.DateTimeField(auto_now_add=True)
+    product = models.ManyToManyField(
+        Product,
+        blank=True,
+        verbose_name='товар'
+    )
 
     class Meta:
-        ordering = ['created']
-        verbose_name = "комментарий"
-        verbose_name_plural = "комментарии"
+        verbose_name = "корзину"
+        verbose_name_plural = "корзины"
 
     def __str__(self):
-        return f'{self.product.name}, {self.user.username}'
+        return self.user.username

@@ -6,6 +6,32 @@ from phonenumber_field.modelfields import PhoneNumberField
 from apps.board.models import Departament
 
 
+class Achievement(models.Model):
+    """Достижения"""
+    icon = models.ImageField('иконка', upload_to='achievements/')
+    name = models.CharField("название", max_length=50)
+    description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = "достижение"
+        verbose_name_plural = "достижения"
+
+    def __str__(self):
+        return self.name
+
+
+class Position(models.Model):
+    """Должность"""
+    name = models.CharField("название должности", max_length=25)
+
+    class Meta:
+        verbose_name = "должность",
+        verbose_name_plural = "должности"
+
+    def __str__(self):
+        return self.name
+
+
 class Profile(models.Model):
     """Профиль пользователя"""
     user = models.OneToOneField(
@@ -30,6 +56,18 @@ class Profile(models.Model):
         blank=True,
         null=True
     )
+    position = models.ForeignKey(
+        Position,
+        on_delete=models.CASCADE,
+        verbose_name='должность',
+        blank=True,
+        null=True
+    )
+    achievements = models.ManyToManyField(
+        Achievement,
+        blank=True,
+        verbose_name='достижения'
+    )
 
     class Meta:
         verbose_name = "профиль"
@@ -41,7 +79,6 @@ class Profile(models.Model):
 
 class Location(models.Model):
     """Адрес"""
-    city = models.CharField('город', max_length=20)
     profile = models.OneToOneField(
         Profile,
         on_delete=models.CASCADE,
@@ -50,6 +87,7 @@ class Location(models.Model):
         blank=True,
         null=True
     )
+    city = models.CharField('город', max_length=20)
 
     class Meta:
         verbose_name = 'адрес'
@@ -59,6 +97,7 @@ class Location(models.Model):
         return self.city
 
 
+# Добавить токены
 class Wallet(models.Model):
     """Кошелек"""
     user = models.OneToOneField(

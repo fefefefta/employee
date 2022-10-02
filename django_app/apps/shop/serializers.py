@@ -1,6 +1,6 @@
-from .models import Tag, Product, Comment, Category, Image
-
 from rest_framework import serializers
+
+from .models import Product, Category, Cart
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -14,73 +14,9 @@ class CategorySerializer(serializers.ModelSerializer):
         ]
 
 
-class ImageSerializer(serializers.ModelSerializer):
-    """Изображения для товара"""
-
-    class Meta:
-        model = Image
-        fields = [
-            "image",
-        ]
-
-
-class TagSerializer(serializers.ModelSerializer):
-    """Тэг товара"""
-
-    class Meta:
-        model = Tag
-        fields = [
-            "id",
-            "name"
-        ]
-
-
-class CommentAuthorSerializer(serializers.ModelSerializer):
-    """Комментарий"""
-
-    class Meta:
-        model = Comment
-        fields = [
-            'id',
-            'text',
-            'product'
-        ]
-
-
-class CommentSerializer(serializers.ModelSerializer):
-    """Комментарий"""
-
-    class Meta:
-        model = Comment
-        fields = [
-            "id",
-            "product",
-            "user",
-            "text",
-            "created"
-        ]
-
-
-class ProductListSerializer(serializers.ModelSerializer):
+class ProductSerializer(serializers.ModelSerializer):
     """Список товаров"""
     category = CategorySerializer()
-    tags = TagSerializer(many=True)
-
-    class Meta:
-        model = Product
-        fields = [
-            "id",
-            "name",
-            "category",
-            "tags"
-        ]
-
-
-class ProductDetailSerializer(serializers.ModelSerializer):
-    """Товар детально"""
-    category = CategorySerializer()
-    tags = TagSerializer(many=True)
-    product_images = ImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
@@ -90,6 +26,17 @@ class ProductDetailSerializer(serializers.ModelSerializer):
             "description",
             "price",
             "category",
-            "tags",
-            "product_images",
+            "image",
+        ]
+
+
+class CartSerializer(serializers.ModelSerializer):
+    """Товары в корзине"""
+    product = ProductSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Cart
+        fields = [
+            'id',
+            'product',
         ]

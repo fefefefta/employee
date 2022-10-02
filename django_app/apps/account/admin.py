@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Departament, Location, Profile, Wallet
+from .models import Departament, Location, Profile, Wallet, Achievement, Position
 
 
 class LocationTabInlines(admin.TabularInline):
@@ -20,4 +20,14 @@ class ProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Wallet)
 class WalletAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Achievement)
+class AchievementAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Position)
+class PositionAdmin(admin.ModelAdmin):
     pass

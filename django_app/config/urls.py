@@ -9,6 +9,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/shop/', include('apps.shop.urls')),
     path('api/v1/account/', include('apps.account.urls')),
+    path('api/v1/board/', include('apps.board.urls')),
 ]
 
 urlpatterns += docs

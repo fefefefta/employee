@@ -1,38 +1,25 @@
 from rest_framework.viewsets import ModelViewSet
 
-from ..base.permissions import IsAuthor
-from .models import Product, Comment
-from .serializers import ProductDetailSerializer, ProductListSerializer, \
-    CommentSerializer, CommentAuthorSerializer
+from .models import Product, Cart
+from .serializers import ProductSerializer, CartSerializer
 
 
-class ProductListView(ModelViewSet):
+class ProductView(ModelViewSet):
     """Список товаров"""
     queryset = Product.objects.all()
-    serializer_class = ProductListSerializer
+    serializer_class = ProductSerializer
 
 
-class ProductDetailView(ModelViewSet):
-    """Продукт детально"""
-    queryset = Product.objects.all()
-    serializer_class = ProductDetailSerializer
-
-
-class CommentView(ModelViewSet):
-    """Комментарий к товару"""
-    serializer_class = CommentSerializer
+class CartView(ModelViewSet):
+    """Корзина"""
+    serializer_class = CartSerializer
 
     def get_queryset(self):
-        return Comment.objects.filter(product_id=self.kwargs.get("pk"))
+        user = self.request.user
+        queryset = Cart.objects.filter(id=user.id)
+        return queryset
 
 
-class CommentAuthorView(ModelViewSet):
-    """CRUD комментариев автора"""
-    serializer_class = CommentAuthorSerializer
-    permission_classes = [IsAuthor]
-
-    def get_queryset(self):
-        return Comment.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+class OrderView(ModelViewSet):
+    """Заказ"""
+    pass
