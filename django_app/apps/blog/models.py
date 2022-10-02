@@ -20,6 +20,12 @@ class Post(models.Model):
     )
     name = models.CharField(max_length=50)
     description = models.TextField()
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name='+',
+        verbose_name='категория'
+    )
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
