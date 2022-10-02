@@ -10,6 +10,7 @@ urlpatterns = [
     path('api/v1/shop/', include('apps.shop.urls')),
     path('api/v1/account/', include('apps.account.urls')),
     path('api/v1/board/', include('apps.board.urls')),
+    path('api/v1/blog/', include('apps.blog.urls')),
 ]
 
 urlpatterns += docs
