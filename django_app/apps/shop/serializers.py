@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Product, Category, Cart
+from .models import Product, Category, Cart, CartItem, Order, OrderItem
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -17,7 +17,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     """Список товаров"""
-    category = CategorySerializer()
 
     class Meta:
         model = Product
@@ -31,13 +30,55 @@ class ProductSerializer(serializers.ModelSerializer):
         ]
 
 
-class CartSerializer(serializers.ModelSerializer):
-    """Товары в корзине"""
-    product = ProductSerializer(many=True, read_only=True)
+class CartItemSerializer(serializers.ModelSerializer):
+    """Товар в корзине"""
 
     class Meta:
-        model = Cart
+        model = CartItem
         fields = [
             'id',
             'product',
+            'quantity'
+        ]
+
+
+class OrderItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderItem
+        fields = [
+            'id',
+            'product',
+            'price',
+            'quantity'
+        ]
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    """Заказ"""
+    total_cost = serializers.ReadOnlyField()
+    items = OrderItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Order
+        fields = [
+            'id',
+            'user',
+            'address',
+            'postal_code',
+            'city',
+            'total_cost',
+            'items',
+            'created',
+        ]
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    """Товар в корзине"""
+
+    class Meta:
+        model = CartItem
+        fields = [
+            'id',
+            'product',
+            'quantity'
         ]

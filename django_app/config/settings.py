@@ -135,3 +135,5 @@ REST_FRAMEWORK = {
     ],
 
 }
+
+CART_SESSION_ID = 'cart'

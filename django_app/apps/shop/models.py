@@ -35,17 +35,57 @@ class Product(models.Model):
         return self.name
 
 
-class Cart(models.Model):
-    """Корзина пользователя"""
+class Order(models.Model):
+    """Заказ"""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='пользователь',
     )
-    product = models.ManyToManyField(
-        Product,
-        blank=True,
-        verbose_name='товар'
+    address = models.CharField(max_length=250)
+    postal_code = models.CharField(max_length=20)
+    city = models.CharField(max_length=100)
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'заказ'
+        verbose_name_plural = 'заказы'
+
+    def __str__(self):
+        return 'Order {}'.format(self.id)
+
+    @property
+    def total_cost(self):
+        return sum(item.get_cost() for item in self.items.all())
+
+
+class OrderItem(models.Model):
+    """Позиция в заказе"""
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        related_name='items'
+    )
+    product = models.ForeignKey(Product,
+        on_delete=models.CASCADE,
+        related_name='order_items'
+    )
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return '{}'.format(self.id)
+
+    def get_cost(self):
+        return self.price * self.quantity
+
+
+class Cart(models.Model):
+    """Корзина пользователя"""
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='пользователь',
     )
 
     class Meta:
@@ -54,3 +94,29 @@ class Cart(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    def clear(self):
+        self.items.all().delete()
+
+
+class CartItem(models.Model):
+    """Позиция в корзине"""
+    cart = models.ForeignKey(
+        Cart,
+        on_delete=models.CASCADE,
+        verbose_name="корзина",
+        related_name="items"
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        verbose_name="товар"
+    )
+    quantity = models.IntegerField(
+        default=1,
+        verbose_name="количество"
+    )
+
+    class Meta:
+        verbose_name = "товар в корзине"
+        verbose_name_plural = "товары в корзине"
