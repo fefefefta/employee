@@ -7,6 +7,10 @@ class Category(models.Model):
     """Категория"""
     name = models.CharField(max_length=50)
 
+    class Meta:
+        verbose_name = "категория"
+        verbose_name_plural = "категории"
+
     def __str__(self):
         return self.name
 
@@ -29,6 +33,10 @@ class Post(models.Model):
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "публикация"
+        verbose_name_plural = "публикации"
 
     def __str__(self):
         return self.name
@@ -54,3 +62,5 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['created']
+        verbose_name = "комментарий"
+        verbose_name_plural = "комментарии"
