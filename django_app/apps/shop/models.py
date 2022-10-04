@@ -95,6 +95,10 @@ class Cart(models.Model):
     def __str__(self):
         return self.user.username
 
+    @property
+    def total_cost(self):
+        return sum(item.get_cost() for item in self.items.all())
+
     def clear(self):
         self.items.all().delete()
 
@@ -120,3 +124,6 @@ class CartItem(models.Model):
     class Meta:
         verbose_name = "товар в корзине"
         verbose_name_plural = "товары в корзине"
+
+    def get_cost(self):
+        return self.product.price * self.quantity

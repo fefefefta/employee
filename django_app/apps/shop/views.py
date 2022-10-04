@@ -1,8 +1,11 @@
+from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
 
 from .models import Product, Cart, CartItem, Order, OrderItem
 from .serializers import ProductSerializer, CartItemSerializer, \
     OrderSerializer, OrderItemSerializer
+from .services import buy_with_coins
 
 
 class ProductView(ModelViewSet):
@@ -43,11 +46,11 @@ class OrderView(ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        order = serializer.save(
-            user=self.request.user
-        )
+        user = self.request.user
+        cart = Cart.objects.get(user=user)
 
-        cart = Cart.objects.get(user=self.request.user)
+        buy_with_coins(user.id, cart.total_cost)
+        order = serializer.save(user=user)
         for item in cart.items.all():
             order_item = OrderItem(
                 order=order,
@@ -57,3 +60,5 @@ class OrderView(ModelViewSet):
             )
             order_item.save()
         cart.clear()
+
+
