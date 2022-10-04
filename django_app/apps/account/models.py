@@ -7,7 +7,6 @@ from apps.board.models import Departament
 
 
 class Achievement(models.Model):
-    """Достижения"""
     icon = models.ImageField('иконка', upload_to='achievements/')
     name = models.CharField("название", max_length=50)
     description = models.TextField(blank=True, null=True)
@@ -21,7 +20,6 @@ class Achievement(models.Model):
 
 
 class Position(models.Model):
-    """Должность"""
     name = models.CharField("название должности", max_length=25)
 
     class Meta:
@@ -33,7 +31,6 @@ class Position(models.Model):
 
 
 class Profile(models.Model):
-    """Профиль пользователя"""
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -78,11 +75,9 @@ class Profile(models.Model):
 
 
 class Location(models.Model):
-    """Адрес"""
     profile = models.OneToOneField(
         Profile,
         on_delete=models.CASCADE,
-        related_name='+',
         verbose_name='адрес',
         blank=True,
         null=True
@@ -99,7 +94,6 @@ class Location(models.Model):
 
 # Добавить токены
 class Wallet(models.Model):
-    """Кошелек"""
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,

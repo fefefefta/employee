@@ -3,7 +3,6 @@ from django.db import models
 
 
 class Departament(models.Model):
-    """Отдел банка"""
     name = models.CharField('название', max_length=50)
 
     class Meta:
@@ -14,15 +13,18 @@ class Departament(models.Model):
         return self.name
 
 
-# Добавить планирую пойти
 # Понять передачу NFT
 class Event(models.Model):
-    """Мероприятие"""
     name = models.CharField('название', max_length=50)
     start = models.DateTimeField('начало')
     end = models.DateTimeField('конец', blank=True, null=True)
     description = models.TextField('описание')
     payment = models.DecimalField('оплата', max_digits=8, decimal_places=2, default=0)
+    users = models.ManyToManyField(
+        User,
+        blank=True,
+        verbose_name='пользователи'
+    )
 
     class Meta:
         verbose_name = "событие"
@@ -45,7 +47,6 @@ class Category(models.Model):
 
 # Понять передачу NFT
 class Idea(models.Model):
-    """Идея от пользователя"""
     STATUS_CHOICE = (
         ("новая", "Новая"),
         ("обсуждение", "Обсуждение"),
@@ -85,8 +86,7 @@ class Idea(models.Model):
 
 # Понять передачу NFT
 class Payment(models.Model):
-    """Оплата за идею"""
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='пользователь',
@@ -107,10 +107,6 @@ class Payment(models.Model):
 
 
 class Location(models.Model):
-    """Адрес мероприятия"""
-    city = models.CharField('город', max_length=20)
-    street = models.CharField('улица', max_length=50)
-    house = models.IntegerField('дом')
     event = models.ForeignKey(
         Event,
         on_delete=models.CASCADE,
@@ -118,6 +114,9 @@ class Location(models.Model):
         null=True,
         verbose_name='мероприятие'
     )
+    city = models.CharField('город', max_length=20)
+    street = models.CharField('улица', max_length=50)
+    house = models.IntegerField('дом')
 
     class Meta:
         verbose_name = "адрес"
@@ -128,7 +127,6 @@ class Location(models.Model):
 
 
 class Image(models.Model):
-    """Изображения для мероприятия"""
     image = models.ImageField('изображение', upload_to="event/image/")
     event = models.ForeignKey(
         Event,
@@ -145,7 +143,6 @@ class Image(models.Model):
 
 
 class File(models.Model):
-    """Файл для идеи"""
     file = models.FileField('файл', upload_to='user-idea-file/')
     idea = models.ForeignKey(
         Idea,

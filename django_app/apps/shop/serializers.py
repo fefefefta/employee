@@ -12,6 +12,7 @@ class CategorySerializer(serializers.ModelSerializer):
             "id",
             "name"
         ]
+        ref_name = "shop_category"
 
 
 class ProductSerializer(serializers.ModelSerializer):

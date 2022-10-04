@@ -1,46 +1,43 @@
-from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework import parsers
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.parsers import MultiPartParser
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.filters import OrderingFilter
 
-from . import models
-from . import serializers
-from .models import Idea
+from .models import Event, Idea
+from .serializers import (
+    EventListSerializer,
+    EventDetailSerializer,
+    IdeaListSerializer
+)
 
 
-# Список категорий
 class EventListView(ListAPIView):
-    """Список событий"""
-    queryset = models.Event.objects.all()
-    serializer_class = serializers.EventListSerializer
-    # pagination_class = 9
+    queryset = Event.objects.all()
+    serializer_class = EventListSerializer
 
 
 class EventDetailView(RetrieveAPIView):
-    """Событие подробно"""
-    queryset = models.Event.objects.all()
-    serializer_class = serializers.EventDetailSerializer
+    queryset = Event.objects.all()
+    serializer_class = EventDetailSerializer
 
 
 class IdeaListView(ModelViewSet):
-    """Список идей"""
     queryset = Idea.objects.all()
-    serializer_class = serializers.IdeaListSerializer
-    # pagination_class = 4
+    serializer_class = IdeaListSerializer
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filter_fields = ['category', ]
     ordering_fields = ['likes', 'created', ]
 
 
 class IdeaCreateView(ModelViewSet):
-    """Создание идеи"""
-    parser_classes = (parsers.MultiPartParser,)
-    serializer_class = serializers.IdeaListSerializer
+    # parser_classes = (MultiPartParser,)
+
+    serializer_class = IdeaListSerializer
 
     def get_queryset(self):
-        return models.Idea.objects.filter(user=self.request.user)
+        return Idea.objects.filter(user=self.request.user.id)
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save(user=self.request.user.id)
